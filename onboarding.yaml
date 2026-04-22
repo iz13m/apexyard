@@ -29,9 +29,9 @@
 # Company Information
 # -----------------------------------------------------------------------------
 company:
-  name: "Your Company Name"
-  mission: "What you're building and why"
-  vision: "Where you're headed long-term"
+  name: "Spotless"
+  mission: "Connecting customers with cleaning service providers through a seamless cross-platform app"
+  vision: "The go-to marketplace for on-demand cleaning services"
   website: "https://yourcompany.com"
 
   # Core values that guide decision-making
@@ -42,9 +42,9 @@ company:
 
   # What kind of software you build
   products:
-    - name: "Main Product"
-      description: "Brief description of what it does"
-      type: "web-app"  # web-app, mobile-app, api, cli, library, saas
+    - name: "Spotless App"
+      description: "Cross-platform app for booking and managing cleaning services"
+      type: "mobile-app"  # web-app, mobile-app, api, cli, library, saas
 
 # -----------------------------------------------------------------------------
 # Team Structure
@@ -61,19 +61,19 @@ company:
 #   Data:        head-of-data, data-analyst, data-engineer
 #
 team:
-  - name: "Team Lead"
+  - name: "Founder / Tech Lead"
     role: "tech-lead"
     department: "engineering"
 
-  - name: "Developer 1"
-    role: "backend-engineer"
-    department: "engineering"
-
-  - name: "Developer 2"
-    role: "frontend-engineer"
-    department: "engineering"
-
   # Uncomment and add more team members as needed:
+  # - name: "Backend Engineer"
+  #   role: "backend-engineer"
+  #   department: "engineering"
+  #
+  # - name: "Frontend Engineer"
+  #   role: "frontend-engineer"
+  #   department: "engineering"
+  #
   # - name: "PM"
   #   role: "product-manager"
   #   department: "product"
@@ -90,18 +90,18 @@ team:
 tech_stack:
   language: "TypeScript"          # Primary language
   runtime: "Node.js"              # Runtime environment
-  framework: "React"              # Frontend framework (React, Vue, Svelte, etc.)
-  backend: "Express"              # Backend framework (Express, Fastify, NestJS, etc.)
+  framework: "React Native"       # Cross-platform mobile + web (iOS, Android, web)
+  backend: "Express"              # Backend framework — revisit as stack matures
   database: "PostgreSQL"          # Primary database
   hosting: "AWS"                  # Cloud provider (AWS, GCP, Azure, Vercel, etc.)
   ci_cd: "GitHub Actions"         # CI/CD platform
-  testing: "Vitest"               # Test framework
-  e2e_testing: "Playwright"       # E2E test framework
+  testing: "Jest"                 # Test framework (best support for React Native)
+  e2e_testing: "Detox"            # E2E test framework for React Native
 
   # Additional tools (uncomment what you use):
   # orm: "Prisma"
   # state_management: "Zustand"
-  # styling: "Tailwind CSS"
+  # styling: "NativeWind"         # Tailwind for React Native
   # api_style: "REST"             # REST, GraphQL, gRPC
   # iac: "Terraform"              # Infrastructure as Code tool
   # monitoring: "Datadog"
@@ -151,7 +151,7 @@ workflows:
   require_qa_signoff: true         # Require QA verification before Done
   require_security_review: false   # Require security review before launch
   use_feature_flags: false         # Use feature flags for rollouts
-  use_agent_decision_records: true # Track AI agent decisions
+  use_agent_decision_records: true # Track AI agent decisions — especially valuable while stack is being decided
 
 # -----------------------------------------------------------------------------
 # Communication
