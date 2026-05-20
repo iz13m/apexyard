@@ -30,6 +30,26 @@ projects:
       - mobile
     ticket_prefix: GH
 
+  # ---------------------------------------------------------------------------
+  # Spotless Staff — workforce app for drivers & cleaners
+  # ---------------------------------------------------------------------------
+  - name: spotless-staff
+    repo: iz13m/spotless-staff
+    # workspace lives at apexyard/workspace/spotless-staff (gitignored).
+    workspace: workspace/spotless-staff
+    docs: projects/spotless-staff
+    status: active
+    tier: P0
+    roles:
+      - tech-lead
+      - frontend-engineer
+      - qa-engineer
+    tags:
+      - internal-tool
+      - mobile
+      - workforce
+    ticket_prefix: GH
+
 # -----------------------------------------------------------------------------
 # Defaults
 # -----------------------------------------------------------------------------
