@@ -115,11 +115,26 @@ MSG
   fi
 fi
 
-# Check PR body for Glossary section
-if echo "$COMMAND" | grep -q '\-\-body'; then
-  if ! echo "$COMMAND" | grep -qiE '##\s*(Glossary|glossary)'; then
-    ERRORS="${ERRORS}PR body missing required '## Glossary' section.\n"
-  fi
+# Check PR body for the Glossary section. The body can arrive two ways:
+#   --body "<inline content>"   — body sits inside $COMMAND, grep it directly
+#   --body-file <path>          — body lives in the file, follow the path
+# Previously the hook only looked at $COMMAND and missed --body-file entirely,
+# blocking PRs that had a perfectly valid Glossary in their body file. See
+# iz13m/apexyard#6.
+BODY_CONTENT=""
+
+# --body-file takes precedence — it's the idiomatic shape for multi-line bodies.
+BODY_FILE_PATH=$(echo "$COMMAND" | sed -nE 's/.*--body-file[[:space:]]+([^[:space:]]+).*/\1/p' | head -1)
+if [ -n "$BODY_FILE_PATH" ] && [ -f "$BODY_FILE_PATH" ]; then
+  BODY_CONTENT=$(cat "$BODY_FILE_PATH")
+elif echo "$COMMAND" | grep -qE '(^|[[:space:]])--body([[:space:]]|=)'; then
+  # Inline --body — content is already in $COMMAND. The negative lookahead-ish
+  # boundary `([[:space:]]|=)` prevents `--body-file` from matching here.
+  BODY_CONTENT=$COMMAND
+fi
+
+if [ -n "$BODY_CONTENT" ] && ! echo "$BODY_CONTENT" | grep -qiE '##\s*(Glossary|glossary)'; then
+  ERRORS="${ERRORS}PR body missing required '## Glossary' section.\n"
 fi
 
 # Validate branch name has ticket ID
