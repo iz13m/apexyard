@@ -31,10 +31,45 @@ if ! echo "$COMMAND" | grep -qE '\bgit\s+commit\b'; then
   exit 0
 fi
 
-# Extract commit message (multi-line safe)
-COMMAND_FLAT=$(echo "$COMMAND" | tr '\n' ' ')
+# Extract commit message (multi-line safe).
+#
+# `-m "$(cat <<'EOF' subject ... body ... EOF )"` is a common Claude idiom for
+# multi-line messages. The flatten-then-regex path below treats the heredoc's
+# outer `"..."` as one literal string and ends up with the substitution syntax
+# (`$(cat <<'EOF' subject ... EOF )`) as the subject — which never matches
+# any conventional-commit type. Detect this shape first and pull the heredoc
+# body directly from the un-flattened COMMAND. See iz13m/apexyard#7.
 MSG=""
-MSG=$(echo "$COMMAND_FLAT" | sed -nE "s/.*-m[[:space:]]+'([^']*)'.*/\1/p" | head -1)
+HEREDOC_TERM=$(echo "$COMMAND" | grep -oE '<<-?["'"'"']?[A-Za-z_][A-Za-z0-9_]*' | head -1 | sed -E "s/^<<-?[\"']?//")
+if [ -n "$HEREDOC_TERM" ] && echo "$COMMAND" | grep -qE '\-m[[:space:]]+"\$\(cat[[:space:]]+<<'; then
+  # Walk the original (newline-preserving) COMMAND. Lines strictly between
+  # the `<<TERM` opener and the closing `TERM` line are the heredoc body.
+  # Awk handles the multi-line awareness; sed multi-line is a footgun here.
+  MSG=$(echo "$COMMAND" | awk -v t="$HEREDOC_TERM" '
+    BEGIN { capturing = 0 }
+    {
+      stripped = $0
+      sub(/^[[:space:]]+/, "", stripped)
+      if (capturing) {
+        # Close on a line that is exactly TERM, or starts with TERM followed
+        # by `)` (handles `EOF)` and `EOF)"` on the same line).
+        if (stripped == t || stripped ~ ("^" t "[[:space:]]*\\)")) {
+          capturing = 0
+        } else {
+          print $0
+        }
+      } else if (match($0, "<<-?[\"\047]?" t)) {
+        capturing = 1
+      }
+    }
+  ')
+fi
+
+COMMAND_FLAT=$(echo "$COMMAND" | tr '\n' ' ')
+
+if [ -z "$MSG" ]; then
+  MSG=$(echo "$COMMAND_FLAT" | sed -nE "s/.*-m[[:space:]]+'([^']*)'.*/\1/p" | head -1)
+fi
 if [ -z "$MSG" ]; then
   MSG=$(echo "$COMMAND_FLAT" | sed -nE 's/.*-m[[:space:]]+"([^"]*)".*/\1/p' | head -1)
 fi
