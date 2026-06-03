@@ -111,8 +111,11 @@ if [ -n "$PREFIX" ]; then
 fi
 
 # Expand a leading ~ to $HOME — the command string isn't shell-expanded yet.
+# Quote the `~` in the strip pattern so bash treats it as literal; an
+# unquoted `~` would tilde-expand at parse time, turning the strip pattern
+# into $HOME and yielding a mangled result like `$HOME~/...`.
 case "$EFFECTIVE_CWD" in
-  "~"*) EFFECTIVE_CWD="$HOME${EFFECTIVE_CWD#~}";;
+  "~"*) EFFECTIVE_CWD="$HOME${EFFECTIVE_CWD#"~"}";;
 esac
 
 # Anchor REPO_ROOT to the effective CWD when it's a real directory; otherwise
