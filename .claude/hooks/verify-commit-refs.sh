@@ -15,8 +15,13 @@
 # rarely uses the interactive path anyway. Accepted gap.
 #
 # Tracker repo resolves in this order:
-#   1. .claude/project-config.json `.tracker_repo`
-#   2. origin remote (parsed from `git remote get-url origin`)
+#   1. .claude/project-config.json `.tracker_repo` (from the resolved repo root)
+#   2. origin remote of the resolved repo root
+#
+# Resolving the repo root accounts for cross-repo commits — `cd <path> && git
+# commit` from inside Claude Code's session PWD. Without this, the hook would
+# check refs against Claude's session repo instead of the commit's actual
+# repo. See iz13m/apexyard#5.
 
 INPUT=$(cat)
 COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
@@ -83,14 +88,50 @@ if [ -z "$REFS" ]; then
   exit 0
 fi
 
-# Resolve tracker repo
-REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+# Resolve the effective working directory of the git command. The hook runs
+# in Claude Code's session PWD, but the actual `git commit` may execute in a
+# different repo via `cd <path> && git commit ...` (the typical Claude/shell
+# idiom). Pull the path out of the command's prefix and use it as the anchor
+# for the tracker lookup.
+#
+# We look at the slice BEFORE `git commit` only — any `cd` in the commit body
+# (`-m "... cd somewhere ..."`) is content, not a working-directory change.
+# `git -C <path> commit` is out of scope here: the gate above (`\bgit\s+commit\b`)
+# and the wrapper's `Bash(git commit *)` matcher both filter that shape out
+# before this hook runs, so any extraction would be unreachable.
+# BSD/macOS sed -E does not support `\b` word boundaries; the pattern below
+# uses an explicit "start-of-string or whitespace" group instead. The gate
+# above already guarantees the command contains a real `git commit` token,
+# so the first match in the prefix is the right one.
+EFFECTIVE_CWD=""
+PREFIX=$(echo "$COMMAND_FLAT" | sed -nE 's|^((.*[[:space:]])?)git[[:space:]]+commit.*|\1|p')
+if [ -n "$PREFIX" ]; then
+  # Use the LAST cd in the prefix so `cd a && cd b && git commit` resolves to b.
+  EFFECTIVE_CWD=$(echo "$PREFIX" | grep -oE '\bcd[[:space:]]+("[^"]+"|'"'"'[^'"'"']+'"'"'|[^[:space:];&|]+)' | tail -1 | sed -E 's/^cd[[:space:]]+//' | sed -E 's/^["'"'"']|["'"'"']$//g')
+fi
+
+# Expand a leading ~ to $HOME — the command string isn't shell-expanded yet.
+case "$EFFECTIVE_CWD" in
+  "~"*) EFFECTIVE_CWD="$HOME${EFFECTIVE_CWD#~}";;
+esac
+
+# Anchor REPO_ROOT to the effective CWD when it's a real directory; otherwise
+# fall back to the hook's PWD (preserves prior behavior for same-repo commits
+# and for any case where the cd-extraction yielded something we can't trust).
+if [ -n "$EFFECTIVE_CWD" ] && [ -d "$EFFECTIVE_CWD" ]; then
+  REPO_ROOT=$(cd "$EFFECTIVE_CWD" && git rev-parse --show-toplevel 2>/dev/null)
+else
+  REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+fi
+
 TRACKER_REPO=""
 if [ -f "${REPO_ROOT}/.claude/project-config.json" ]; then
   TRACKER_REPO=$(jq -r '.tracker_repo // empty' "${REPO_ROOT}/.claude/project-config.json" 2>/dev/null)
 fi
-if [ -z "$TRACKER_REPO" ]; then
-  ORIGIN_URL=$(git remote get-url origin 2>/dev/null)
+if [ -z "$TRACKER_REPO" ] && [ -n "$REPO_ROOT" ]; then
+  # Anchor the origin lookup to REPO_ROOT too — without -C, git would read the
+  # remote of whatever repo PWD points at, defeating the fix above.
+  ORIGIN_URL=$(git -C "$REPO_ROOT" remote get-url origin 2>/dev/null)
   TRACKER_REPO=$(echo "$ORIGIN_URL" | sed -nE 's|.*[:/]([^/:]+/[^/]+)\.git$|\1|p; s|.*[:/]([^/:]+/[^/]+)$|\1|p' | head -1)
 fi
 
