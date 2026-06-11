@@ -30,6 +30,23 @@ projects:
       - mobile
     ticket_prefix: GH
 
+  # ---------------------------------------------------------------------------
+  # Spotless Web — Astro marketing site
+  # ---------------------------------------------------------------------------
+  - name: spotless-web
+    repo: iz13m/spotless-web
+    # workspace omitted — project lives at ~/Code/app/spotless-web (outside ops repo).
+    docs: projects/spotless-web
+    status: active
+    tier: P0
+    roles:
+      - tech-lead
+      - frontend-engineer
+    tags:
+      - customer-facing
+      - marketing-site
+    ticket_prefix: GH
+
 # -----------------------------------------------------------------------------
 # Defaults
 # -----------------------------------------------------------------------------
