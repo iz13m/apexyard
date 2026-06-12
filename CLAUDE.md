@@ -60,7 +60,7 @@ When an upstream role activates and a matching addendum exists at `roles/spotles
 | Upstream role activates | Also read addendum | When |
 |-------------------------|---------------------|------|
 | [Backend Engineer](roles/engineering/backend-engineer.md) | @roles/spotless-addenda/backend-engineer.md | PR touches Firestore schema, security rules, admin SDK, Vercel API route |
-| [Frontend Engineer](roles/engineering/frontend-engineer.md) | @roles/spotless-addenda/frontend-engineer.md | PR touches `spotless/` customer-app (RN + Expo + react-native-firebase) |
+| [Frontend Engineer](roles/engineering/frontend-engineer.md) | @roles/spotless-addenda/frontend-engineer.md | PR touches any RN/Expo app (`spotless/`, `spotless-business/`, or `spotless-staff/`) |
 | [Security Auditor](roles/security/security-auditor.md) | @roles/spotless-addenda/security-auditor.md | PR touches PII, auth, deletion, privacy/terms text, 3rd-party processors |
 
 ### Net-new roles

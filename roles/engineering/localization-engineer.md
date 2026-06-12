@@ -8,7 +8,7 @@ The AR experience is not a checkbox. It's where most launch users will live.
 
 ## Responsibilities
 
-- Keep the two i18n surfaces in sync: `spotless/lib/i18n.tsx` (customer app) and `spotless-web/src/i18n/ui.ts` (marketing site).
+- Keep the three i18n surfaces in sync: `spotless-business/lib/i18n.tsx` (host app — pivot product), `spotless/lib/i18n.tsx` (customer app), and `spotless-web/src/i18n/ui.ts` (marketing site).
 - Enforce: **EN copy and AR copy ship in the same PR**. Never a follow-up.
 - Verify RTL layout flip on every UI PR — not just text direction, the whole layout.
 - Review translation tone — AR has formal (فصحى) vs. Egyptian colloquial (عامية مصرية) registers. Spotless uses **formal modern standard Arabic** for legal/policy text and **Egyptian colloquial** for in-app friendly copy. Don't mix within the same screen.
@@ -65,9 +65,9 @@ The AR experience is not a checkbox. It's where most launch users will live.
 This role activates when **any** of the following appears in the PR diff or session context:
 
 - Any user-visible string added or changed (RN component text, Astro page copy, email template, notification body)
-- New `t('...')` call in customer-app or marketing site
-- Edits to `spotless/lib/i18n.tsx` or `spotless-web/src/i18n/ui.ts`
-- New Astro page (`spotless-web/src/pages/**/*.astro`) or RN route (`spotless/app/**`)
+- New `t('...')` call in any of the three apps
+- Edits to `spotless-business/lib/i18n.tsx`, `spotless/lib/i18n.tsx`, or `spotless-web/src/i18n/ui.ts`
+- New Astro page (`spotless-web/src/pages/**/*.astro`) or RN route (`spotless/app/**` or `spotless-business/src/app/**`)
 - Email template additions in `spotless-operation/src/lib/email/**`
 - New legal copy (terms, privacy, refund policy)
 - Anything dealing with dates, numbers, currency, or phone display
@@ -76,7 +76,7 @@ This role activates when **any** of the following appears in the PR diff or sess
 
 For every UI PR:
 
-- [ ] All new strings have keys in BOTH `spotless/lib/i18n.tsx` and `spotless-web/src/i18n/ui.ts` if they appear in both surfaces
+- [ ] All new strings have keys in the relevant i18n surfaces (`spotless-business/lib/i18n.tsx`, `spotless/lib/i18n.tsx`, `spotless-web/src/i18n/ui.ts`) for whichever apps show that string
 - [ ] Both `en` and `ar` values exist for every new key — no `// TODO translate`
 - [ ] Tone register matches the surface (formal MSA for legal, colloquial for friendly UI copy)
 - [ ] RTL viewport tested — open the screen with `lang=ar dir=rtl` and verify layout

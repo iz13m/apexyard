@@ -1,13 +1,14 @@
-# Firestore Schema — Three-Repo Mirror Discipline
+# Firestore Schema — Four-Repo Mirror Discipline
 
-The Spotless Firestore schema lives in **three places**. Any change to one is a bug if the other two aren't updated in the same PR.
+The Spotless Firestore schema lives in **four places**. Any change to one is a bug if the other three aren't updated in the same PR.
 
-## The three mirrors
+## The four mirrors
 
 | Location | Path | Purpose |
 |----------|------|---------|
-| Customer app | `spotless/types/firestore.ts` (and `spotless/lib/types.ts`) | RN app's view via `@react-native-firebase/firestore` |
-| Ops | `spotless-operation/src/lib/types.ts` (and `src/types/firestore.ts`) | Next.js admin's view via `firebase-admin` |
+| Host app (pivot product) | `spotless-business/lib/types.ts` | RN host app's view via `@react-native-firebase/firestore` |
+| Customer app | `spotless/lib/types.ts` | RN customer app's view via `@react-native-firebase/firestore` |
+| Ops | `spotless-operation/src/types/index.ts` | Next.js admin's view via `firebase-admin` |
 | Functions (dormant) | `spotless/functions/src/types.ts` | Kept in sync as reference; see [[functions-dormant]] |
 
 *Verify exact paths against the current repos before edits — the structure is stable but specific filenames may shift.*
@@ -16,12 +17,12 @@ The Spotless Firestore schema lives in **three places**. Any change to one is a 
 
 When editing **any** of the schema mirrors:
 
-1. **Identify all three locations** before writing the edit.
+1. **Identify all four locations** before writing the edit.
 2. **Apply the same shape change to all of them in the same PR.** Adding a field, changing a type, renaming a key, marking optional → required: all must propagate.
-3. **Add a one-line note in the PR description** confirming the mirror was applied: "Updated Firestore types in spotless, spotless-operation, and functions/."
+3. **Add a one-line note in the PR description** confirming the mirror was applied: "Updated Firestore types in spotless-business, spotless, spotless-operation, and functions/."
 4. **If a reader/writer doesn't exist in one repo for the changed field, that's fine** — the type still needs to match so future code doesn't drift.
 
-## When the three repos legitimately disagree
+## When the four repos legitimately disagree
 
 Only one case: a field that **only the admin SDK can write** (e.g. server-time fields, audit columns set by `requireStaff` routes). In that case:
 

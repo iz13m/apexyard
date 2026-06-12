@@ -20,7 +20,7 @@ projects:
     # Clone into workspace/spotless if you want git-aware skills to work locally:
     #   git clone https://github.com/iz13m/spotless workspace/spotless
     docs: projects/spotless
-    status: active
+    status: paused
     tier: P0
     roles:
       - tech-lead

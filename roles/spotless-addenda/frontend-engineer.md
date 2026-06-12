@@ -1,17 +1,17 @@
 # Addendum: Frontend Engineer — Spotless RN / Expo Context
 
-> Read this file IN ADDITION to [`roles/engineering/frontend-engineer.md`](../engineering/frontend-engineer.md) when the Frontend Engineer role activates on the Spotless customer-app. Extends, does not replace.
+> Read this file IN ADDITION to [`roles/engineering/frontend-engineer.md`](../engineering/frontend-engineer.md) when the Frontend Engineer role activates on any Spotless RN/Expo app (`spotless/`, `spotless-business/`, `spotless-staff/`). Extends, does not replace.
 
 ## When this addendum applies
 
-Auto-activate alongside Frontend Engineer when the PR diff touches:
+Auto-activate alongside Frontend Engineer when the PR diff touches any of:
 
-- `spotless/app/**` (expo-router screens)
-- `spotless/components/**`, `spotless/lib/**`
-- `spotless/eas.json`, `spotless/app.json`, `spotless/babel.config.js`, `spotless/metro.config.js`
+- `spotless/app/**`, `spotless-business/src/app/**`, `spotless-staff/src/app/**` (expo-router screens)
+- `spotless/components/**`, `spotless/lib/**`, `spotless-business/src/components/**`, `spotless-business/lib/**`, `spotless-staff/src/components/**`, `spotless-staff/lib/**`
+- `eas.json`, `app.json`, `babel.config.js`, `metro.config.js` in any of the three RN repos
 - Any `@react-native-firebase/*` or `@expo/*` import
 - Native modules / iOS or Android folders (if/when those exist)
-- `package.json` in the `spotless/` repo (dependency upgrades)
+- `package.json` in `spotless/`, `spotless-business/`, or `spotless-staff/` (dependency upgrades)
 
 ## Additional responsibilities
 
