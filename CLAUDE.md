@@ -21,6 +21,62 @@ Full setup guide: @docs/multi-project.md
 
 ---
 
+## SPOTLESS PORTFOLIO RULES — read first
+
+These rules **override or extend** the generic apexyard rules below for this fork. They encode portfolio-specific context (solo dev, pre-launch, Egypt-first, Firebase Spark indefinitely) that the upstream framework can't assume. When a generic rule and a Spotless rule disagree, the Spotless rule wins.
+
+### Workflow overrides
+
+- **PR bundling is the default**, not one-ticket-per-PR. Bundle related tickets that share files / i18n / data layer. @.claude/rules/pr-bundling-policy.md
+- **All 19 roles collapse to one human.** Adopt role lenses, skip multi-person handoffs, never propose adding people. The two-marker merge gate still applies — the user IS the CEO. @.claude/rules/solo-dev-role-collapse.md
+
+### Architecture rules
+
+- **Server-side = Vercel API route**, never a Cloud Function. Firebase stays on Spark indefinitely. @.claude/rules/server-side-via-vercel-routes.md
+- **Vercel Cron is daily-only on Hobby.** Surface the trade-off if sub-daily is needed; do not silently propose what won't run. @.claude/rules/vercel-cron-is-daily.md
+- **Firestore schema mirrors across 3 repos must change together** in the same PR. @.claude/rules/firestore-schema-mirror.md
+- **`spotless/functions/` is dormant reference.** Don't propose work in it, don't delete it. @.claude/rules/functions-dormant.md
+
+### Context defaults
+
+- **Egypt-first: EGP, AR (RTL first-class), `me-central2` region, `+20` phone codes.** Non-negotiable. @.claude/rules/egypt-first-defaults.md
+- **Pre-launch placeholder sweep.** Fires when the user says "ready to launch" / "production deploy" / "first customer". @.claude/rules/pre-launch-placeholders.md
+
+### Conventions
+
+- **Priority tags `[P0]/[P1]/[P2]` inline in issue titles; `#N` references only.** No Linear, no Jira. @.claude/rules/priority-label-convention.md
+- **AgDRs live in the project repo**, not in apexyard. Spotless uses a structured frontmatter overlay. @.claude/rules/agdr-location.md
+
+---
+
+## SPOTLESS ROLE ADDITIONS
+
+The upstream 19 roles cover generic axes. Spotless adds **role addenda** (extending an existing upstream role with Spotless-specific context) and a few **net-new roles** that don't map to anything upstream.
+
+### Addendum pattern
+
+When an upstream role activates and a matching addendum exists at `roles/spotless-addenda/<role>.md`, **read both files**. The addendum extends — it does not replace — the upstream role. Apply both checklists. The addendum's anti-patterns are blocking; the addendum's CAN / CANNOT lists add to (never remove from) the base role's.
+
+| Upstream role activates | Also read addendum | When |
+|-------------------------|---------------------|------|
+| [Backend Engineer](roles/engineering/backend-engineer.md) | @roles/spotless-addenda/backend-engineer.md | PR touches Firestore schema, security rules, admin SDK, Vercel API route |
+| [Frontend Engineer](roles/engineering/frontend-engineer.md) | @roles/spotless-addenda/frontend-engineer.md | PR touches any RN/Expo app (`spotless/`, `spotless-business/`, or `spotless-staff/`) |
+| [Security Auditor](roles/security/security-auditor.md) | @roles/spotless-addenda/security-auditor.md | PR touches PII, auth, deletion, privacy/terms text, 3rd-party processors |
+
+### Net-new roles
+
+| Role | File | Activates when |
+|------|------|----------------|
+| **Localization Engineer** | @roles/engineering/localization-engineer.md | Any user-visible string added/changed; new i18n key; new RN route or Astro page; new email template; new legal copy; anything date/number/currency/phone |
+
+The Localization Engineer is a **gate** on every UI PR — AR copy and RTL test evidence ship in the same PR, never as follow-up. See [[egypt-first-defaults]] for the umbrella context.
+
+### Solo-dev reminder
+
+Per [[solo-dev-role-collapse]], these roles are **lenses you wear**, not people to hand off to. Read the file, adopt the checklist, self-sign. The two-marker merge gate (Rex + CEO) is the only "handoff" that's mechanically enforced — everything else collapses to the user.
+
+---
+
 ## ROLES
 
 Role definitions live in `roles/`. Each role defines:

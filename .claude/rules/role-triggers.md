@@ -25,6 +25,7 @@ ApexYard ships **19 role definitions** in `roles/{department}/`. They are not al
 | **Head of Data** | `roles/data/head-of-data.md` | Analytics strategy · data governance · reporting architecture · cross-project data modelling |
 | **Data Analyst** | `roles/data/data-analyst.md` | SQL queries · dashboards · A/B-test analysis · metric investigation |
 | **Data Engineer** | `roles/data/data-engineer.md` | ETL pipelines · data modelling · data-quality work · warehouse schema changes |
+| **Localization Engineer** | `roles/engineering/localization-engineer.md` | **Any user-visible string added/changed** · new i18n key · new RN route or Astro page · new email template · new legal copy · date/number/currency/phone display |
 
 ## Activation Protocol
 
@@ -61,6 +62,7 @@ Each handoff is explicit. The handing-off role delivers the artefact defined in 
 | Roadmap question or prioritization call | Head of Product |
 | User flow / wireframe / IA question | UX Designer |
 | Component spec / design tokens question | UI Designer |
+| Any user-visible string added/changed; new `t('...')` call; new RN route or Astro page; new email template; new legal copy; anything date/number/currency/phone | Localization Engineer |
 | Cross-project strategy question | The relevant Head of _ role |
 
 **Prompted activation** — the user explicitly asks for a role:

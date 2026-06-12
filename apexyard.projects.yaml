@@ -10,7 +10,9 @@ version: 1
 
 projects:
   # ---------------------------------------------------------------------------
-  # Spotless — cross-platform cleaning services app
+  # Spotless — cross-platform cleaning services app (residential — FROZEN
+  # during the STR pivot per AgDR-0017 in spotless-operation; repo also hosts
+  # the shared firestore.rules + indexes for the whole Firebase project)
   # ---------------------------------------------------------------------------
   - name: spotless
     repo: iz13m/spotless
@@ -18,7 +20,7 @@ projects:
     # Clone into workspace/spotless if you want git-aware skills to work locally:
     #   git clone https://github.com/iz13m/spotless workspace/spotless
     docs: projects/spotless
-    status: active
+    status: paused
     tier: P0
     roles:
       - tech-lead
@@ -48,6 +50,64 @@ projects:
       - internal-tool
       - mobile
       - workforce
+    ticket_prefix: GH
+
+  # ---------------------------------------------------------------------------
+  # Spotless Operation — Next.js ops admin + all server-side Vercel API routes
+  # (per AgDR-0006: server-side work lives here, never Cloud Functions)
+  # ---------------------------------------------------------------------------
+  - name: spotless-operation
+    repo: iz13m/spotless-operation
+    # workspace omitted — project lives at ~/Code/app/spotless-operation.
+    docs: projects/spotless-operation
+    status: active
+    tier: P0
+    roles:
+      - tech-lead
+      - backend-engineer
+      - frontend-engineer
+      - qa-engineer
+    tags:
+      - internal-tool
+      - web
+      - api
+    ticket_prefix: GH
+
+  # ---------------------------------------------------------------------------
+  # Spotless Business — host-facing app for STR turnovers (the pivot product;
+  # AgDR-0001/0002/0003 live in this repo)
+  # ---------------------------------------------------------------------------
+  - name: spotless-business
+    repo: iz13m/spotless-business
+    # workspace omitted — project lives at ~/Code/app/spotless-business.
+    docs: projects/spotless-business
+    status: active
+    tier: P0
+    roles:
+      - tech-lead
+      - backend-engineer
+      - frontend-engineer
+      - qa-engineer
+    tags:
+      - customer-facing
+      - mobile
+    ticket_prefix: GH
+
+  # ---------------------------------------------------------------------------
+  # Spotless Web — Astro marketing site
+  # ---------------------------------------------------------------------------
+  - name: spotless-web
+    repo: iz13m/spotless-web
+    # workspace omitted — project lives at ~/Code/app/spotless-web (outside ops repo).
+    docs: projects/spotless-web
+    status: active
+    tier: P0
+    roles:
+      - tech-lead
+      - frontend-engineer
+    tags:
+      - customer-facing
+      - marketing-site
     ticket_prefix: GH
 
 # -----------------------------------------------------------------------------
